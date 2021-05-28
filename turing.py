@@ -1,6 +1,6 @@
 import numpy as np
 from abc import *
-
+#lubie plaski
 
 class GrafAbstrakcyjny(ABC):
 
