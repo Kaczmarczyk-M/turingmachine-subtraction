@@ -1,6 +1,6 @@
 import numpy as np
 from abc import *
-
+#lubiwe pla
 class AbstrackMaszynaTuringa(ABC):
     @abstractmethod
     def __init__(self, alfabet, symbol_pusty, stany, stan_początkowy, przejscia):
