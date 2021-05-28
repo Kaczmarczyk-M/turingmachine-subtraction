@@ -1,24 +1,6 @@
 import numpy as np
 from abc import *
 
-# class graf:
-#     def __init__(self, A, B, C):#A - lista węzłów, B - m.połączeń, C- m.wag
-#         if B.shape != C.shape or B.shape[0] != B.shape[1] or C.shape[0] != C.shape[1] or len(A)  != B.shape[0]:
-#             raise Exception("Nie spełnia warunków")     
-#         self.wezly = A[:]
-#         self.polaczenia = np.array(B)
-#         self.wagi = np.array(C)
-#     def skierowany(self): 
-#         if (np.transpose(self.polaczenia) == self.polaczenia).sum() == self.polaczenia.shape[0] * self.polaczenia.shape[1]:
-#             return True
-#         else:
-#             return False
-#     def wypisz(self):
-#         print("Lista węzłów:\n", self.wezly)
-#         print("Macierz połączeń:\n", self.polaczenia)
-#         print("Macierz wag:\n", self.wagi)
-
-
 
 class GrafAbstrakcyjny(ABC):
 
