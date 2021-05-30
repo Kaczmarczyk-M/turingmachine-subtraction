@@ -34,45 +34,52 @@ class MaszynaTuringa(AbstrackMaszynaTuringa):
     def RozpocznijDzialanieZmodyfikowanejTasmy(self, tasma):
         pass
     
-    def RozpocznijDzialanieBEZZmodyfikowanejTasmy(self, tasma):
+    def CzyStanPoczątkowy(self, stan):
+        if stan != MaszynaTuringa.stan_poczatkowy:
+            return 0
+        else:
+            return 1
+    
+    def CzyStanKoncowy(self, stan):
+        pass
+    def WykonajKrok(self):
+        pass
+    def doznaku(self, tasma, indeks, znakibrake, kierunek): #kierunek -1 => lewo; 1 => prawo 
+        a = 1
+        while(a):
+            indeks += kierunek
+            for n in range(len(znakibrake)):
+                if tasma[indeks] == znakibrake[n]:
+                    a = 0
+                    break
+        return indeks 
+
+    def zamiana(self, tasma, indeks, znakPocz, znakKonc, kierunek):
+        if znakPocz == tasma[indeks]: 
+            tasma[indeks] = znakKonc
+            indeks += kierunek 
+            return [tasma,indeks]
+        else:
+            print("Error - zamiana")
+            print(logging.FATAL)
+    def petlaZamian(self, indeks, K, kierunek):
+        for i in range(K): #liczba cyfr z przecinkiem
+            indeks += kierunek
+        return indeks
+    def RozpocznijDzialanieTasmy(self, tasma):
         for i in range(len(tasma)):
             for j in range(len(MaszynaTuringa.alfabet)):
                 if tasma[i] != MaszynaTuringa.alfabet[j]:
                     print("zła tasma")
                     print(logging.FATAL)
                     break
-        pass
-    
-    def CzyStanPoczątkowy(self, stan):
-        pass
-    
-    def CzyStanKoncowy(self, stan):
-        pass
-    def WykonajKrok(self):
-        pass
-    def doznaku(self, tasma, indeks, znakibrake, oILE, kierunek): #kierunek -1 => lewo; 1 => prawo 
-        a = 0
-        for i in range(oILE):
-            for n in range(len(znakibrake)):
-                if tasma[indeks] == znakibrake[n]:
-                    a = 1
-                    break
-            if a != 1: indeks += kierunek
-        return tasma
+        #### q0
+        indeks = 0 
+        tasma,indeks = self.zamiana(tasma, indeks, 'A', 'A', 1)
+        #### q1 
+        indeks = self.doznaku(tasma, indeks, ['X','A'], 1)
+        indeks -= 1 
 
-    def zamiana(self, tasma, indeks, znakPocz, znakKonc, kierunek):
-        if znakPocz == tasma[indeks]: 
-            tasma[indeks] = znakKonc
-            indeks += kierunek 
-            return tasma
-        else:
-            print("Error - zamiana")
-            print(logging.FATAL)
-    def petlaZamian(self, indeks, K, kierunek):
-        for i in range(K): #liczba cyfr
-            indeks += kierunek
-        return indeks
-    
 if __name__ == "__main__":
     alfabet = [0,1,2,3,4,5,6,7,8,9, ',','-', 'X']
     symbol_pusty = 'A'
