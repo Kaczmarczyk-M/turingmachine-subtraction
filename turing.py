@@ -9,9 +9,9 @@ class AbstrackMaszynaTuringa(ABC):
     @abstractmethod
     def RozpocznijDzialanieZmodyfikowanejTasmy(self,tasma):
         pass
-    @abstractmethod
-    def RozpocznijDzialanieBEZZmodyfikowanejTasmy(self, tasma):
-        pass
+    # @abstractmethod
+    # def RozpocznijDzialanieBEZZmodyfikowanejTasmy(self, tasma):
+    #     pass
     @abstractmethod
     def CzyStanPoczątkowy(self, stan):
         pass
@@ -23,13 +23,14 @@ class AbstrackMaszynaTuringa(ABC):
         pass
     
 class MaszynaTuringa(AbstrackMaszynaTuringa):
-    def __init__(self, tasma, alfabet, symbol_pusty, stany, stan_poczatkowy, przejscia):
+    def __init__(self, tasma, alfabet, symbol_pusty, stany, stan_poczatkowy, przejscia, ilecyfr):
         self.tasma = tasma
         self.alfabet = alfabet 
         self.symbol_pusty = symbol_pusty
         self.stany = stany
         self.stan_poczatkowy = stan_poczatkowy
         self.przejscia = przejscia
+        self.ilecyfr = ilecyfr
     
     def RozpocznijDzialanieZmodyfikowanejTasmy(self, tasma):
         pass
@@ -68,22 +69,67 @@ class MaszynaTuringa(AbstrackMaszynaTuringa):
         return indeks
     def RozpocznijDzialanieTasmy(self, tasma):
         for i in range(len(tasma)):
-            for j in range(len(MaszynaTuringa.alfabet)):
-                if tasma[i] != MaszynaTuringa.alfabet[j]:
+            for j in range(len(self.alfabet)):
+                if tasma[i] != self.alfabet[j]:
                     print("zła tasma")
                     print(logging.FATAL)
                     break
-        #### q0
+        indeks = 0 
+        tasma, indeks = self.q0(tasma,indeks)
+        dzialanie = 1
+        while(dzialanie):
+            indeks = self.q1(tasma, indeks)
+            print(1)
+            tasma, indeks, zmienna, koniec = self.q2(tasma, indeks)
+            if koniec == 1: dzialanie = 0 
+            tasma, indeks = self.q_n(tasma, indeks, zmienna)
+            indeks = self.Q1(tasma, indeks)
+        print(tasma,indeks)
+
+    def q0(self, tasma, indeks):
         indeks = 0 
         tasma,indeks = self.zamiana(tasma, indeks, 'A', 'A', 1)
-        #### q1 
+        return [tasma, indeks]
+    def q1(self, tasma, indeks):
         indeks = self.doznaku(tasma, indeks, ['X','A'], 1)
         indeks -= 1 
+        return indeks
+    def q2(self, tasma, indeks):
+        koniec = 0
+        zmienna = tasma[indeks]
+        if zmienna == '-':
+            koniec = 1 
+            return [tasma, indeks, zmienna, koniec]
+        else:
+            tasma[indeks] = 'X'
+            return [tasma, indeks, zmienna, koniec]
+    def q_n(self, tasma, indeks, zmiennaprawa):
+        indeks = self.petlaZamian(indeks, self.ilecyfr - 1, -1)
+        zmiennalewa = tasma[indeks]
+        print(zmiennalewa)
+        if zmiennalewa >= zmiennaprawa:
+            tasma[indeks] = zmiennalewa - zmiennaprawa
+            indeks +- 1 
+        else:
+            tasma[indeks] = 10 + zmiennalewa - zmiennaprawa
+            indeks -= 1
+            while(True):
+                if tasma[indeks] == 0:
+                    tasma[indeks] = 9
+                    indeks -= 1 
+                else:
+                    tasma[indeks] -= 1 
+                    indeks -= 1 
+                    break
+        return[tasma, indeks]
+    def Q1(self, tasma, indeks):
+        indeks = self.doznaku(tasma,indeks, 'A', -1)
+        indeks += 1
 
 if __name__ == "__main__":
     alfabet = [0,1,2,3,4,5,6,7,8,9, ',','-', 'X']
     symbol_pusty = 'A'
-    tasma = ['A',1,0,-0,5,'A']
+    tasma = ['A',1,0,'-',0,5,'A']
     stan_poczatkowy = 0 
-    Masz = MaszynaTuringa(123, 123 , 123, 123, 123)
-    
+    Masz = MaszynaTuringa(tasma, alfabet,symbol_pusty,123, stan_poczatkowy, 123, len(tasma) - 1)
+    Masz.RozpocznijDzialanieTasmy(tasma)
