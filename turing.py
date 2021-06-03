@@ -45,7 +45,9 @@ class MaszynaTuringa(AbstrackMaszynaTuringa):
     #dajindex - zwraca na którym miejscu w poszczególnym stanie(liście) stany['q1'][^tu^] stoi dany znak | ^tu^- nie chcemy znaku tylko int indexu
     def DajIndex(self, stany, wCzymSzukamy, czegoSzukamy):
         i = 0 
+        print('w czym szukamy --', self.stany[wCzymSzukamy])
         for i in range(len(self.stany[wCzymSzukamy])):
+            print('pierwsza w danym stanie --',self.stany[wCzymSzukamy][i][0], '|||||  czegoSzukamy --', czegoSzukamy)
             if self.stany[wCzymSzukamy][i][0] == czegoSzukamy:
                 return i
 
@@ -64,8 +66,12 @@ class MaszynaTuringa(AbstrackMaszynaTuringa):
         self.stan_teraz = nastepny_stan
 
     def Uruchom(self):
-        while not self.CzyStanKoncowy(self.stan_teraz): 
+        while 1: 
+            if(self.CzyStanKoncowy(self.stan_teraz)):
+                print(self.tasma)
+                break
             self.WykonajKrok()
+            
            
         
     
@@ -74,7 +80,7 @@ class MaszynaTuringa(AbstrackMaszynaTuringa):
 if __name__ == "__main__":
     alfabet = [0,1,2,3,4, ',', '-', 'X', 'Y']
     symbol_pusty = 'A'
-    tasma = ['A',1,0,'-',0,4,'A']
+    tasma = ['A',1,0,'-','0','4','A']
     stan_poczatkowy = 'q0'
     przejscia = [
         ['q0', 'q1']
@@ -84,7 +90,8 @@ if __name__ == "__main__":
 
             'q1':[
                 ['X','X',-1,'q2'],
-                ['A','A',-1,'q2'],
+                ['A','A',-1,'q2'], # tu powinno być -1
+                [0,0,1,'q1'],
                 [1,1,1,'q1'],
                 [2,2,1,'q1'],
                 [3,3,1,'q1'],
