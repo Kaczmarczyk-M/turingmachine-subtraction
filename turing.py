@@ -9,9 +9,9 @@ class AbstrackMaszynaTuringa(ABC):
     @abstractmethod
     def RozpocznijDzialanieZmodyfikowanejTasmy(self,tasma):
         pass
-    # @abstractmethod
-    # def RozpocznijDzialanieBEZZmodyfikowanejTasmy(self, tasma):
-    #     pass
+    @abstractmethod
+    def RozpocznijDzialanieBEZZmodyfikowanejTasmy(self, tasma):
+        pass
     @abstractmethod
     def CzyStanPoczątkowy(self, stan):
         pass
@@ -23,113 +23,96 @@ class AbstrackMaszynaTuringa(ABC):
         pass
     
 class MaszynaTuringa(AbstrackMaszynaTuringa):
-    def __init__(self, tasma, alfabet, symbol_pusty, stany, stan_poczatkowy, przejscia, ilecyfr):
+    def __init__(self, tasma, alfabet, symbol_pusty, stany, stan_poczatkowy, przejscia):
         self.tasma = tasma
         self.alfabet = alfabet 
         self.symbol_pusty = symbol_pusty
         self.stany = stany
         self.stan_poczatkowy = stan_poczatkowy
         self.przejscia = przejscia
-        self.ilecyfr = ilecyfr
-    
+        self.head = 0
+        self.stan_teraz = self.stan_poczatkowy
+     
     def RozpocznijDzialanieZmodyfikowanejTasmy(self, tasma):
+        pass
+    def RozpocznijDzialanieBEZZmodyfikowanejTasmy(self, tasma):
         pass
     
     def CzyStanPoczątkowy(self, stan):
-        if stan != MaszynaTuringa.stan_poczatkowy:
-            return 0
-        else:
-            return 1
-    
+        return stan == self.stan_poczatkowy
     def CzyStanKoncowy(self, stan):
-        pass
+        return stan == 'end'
+    #dajindex - zwraca na którym miejscu w poszczególnym stanie(liście) stany['q1'][^tu^] stoi dany znak | ^tu^- nie chcemy znaku tylko int indexu
+    def DajIndex(self, stany, wCzymSzukamy, czegoSzukamy):
+        i = 0 
+        print('w czym szukamy --', self.stany[wCzymSzukamy])
+        for i in range(len(self.stany[wCzymSzukamy])):
+            print('pierwsza w danym stanie --',self.stany[wCzymSzukamy][i][0], '|||||  czegoSzukamy --', czegoSzukamy)
+            if self.stany[wCzymSzukamy][i][0] == czegoSzukamy:
+                return i
+
     def WykonajKrok(self):
-        pass
-    def doznaku(self, tasma, indeks, znakibrake, kierunek): #kierunek -1 => lewo; 1 => prawo 
-        a = 1
-        while(a):
-            indeks += kierunek
-            for n in range(len(znakibrake)):
-                if tasma[indeks] == znakibrake[n]:
-                    a = 0
-                    break
-        return indeks 
+        aktualnyZnak = self.tasma[self.head] # na tym znaku na taśmie teraz jestem
+        stan_obecny = self.stan_teraz #w jakim stanie teraz jestem 
 
-    def zamiana(self, tasma, indeks, znakPocz, znakKonc, kierunek):
-        if znakPocz == tasma[indeks]: 
-            tasma[indeks] = znakKonc
-            indeks += kierunek 
-            return [tasma,indeks]
-        else:
-            print("Error - zamiana")
-            print(logging.FATAL)
-    def petlaZamian(self, indeks, K, kierunek):
-        for i in range(K): #liczba cyfr z przecinkiem
-            indeks += kierunek
-        return indeks
-    def RozpocznijDzialanieTasmy(self, tasma):
-        for i in range(len(tasma)):
-            for j in range(len(self.alfabet)):
-                if tasma[i] != self.alfabet[j]:
-                    print("zła tasma")
-                    print(logging.FATAL)
-                    break
-        indeks = 0 
-        tasma, indeks = self.q0(tasma,indeks)
-        dzialanie = 1
-        while(dzialanie):
-            indeks = self.q1(tasma, indeks)
-            print(1)
-            tasma, indeks, zmienna, koniec = self.q2(tasma, indeks)
-            if koniec == 1: dzialanie = 0 
-            tasma, indeks = self.q_n(tasma, indeks, zmienna)
-            indeks = self.Q1(tasma, indeks)
-        print(tasma,indeks)
+        #Zwraca następny stan 
+        a = self.DajIndex(self.stany, stan_obecny, aktualnyZnak)
+        nastepny_stan = self.stany[stan_obecny][a][3]
 
-    def q0(self, tasma, indeks):
-        indeks = 0 
-        tasma,indeks = self.zamiana(tasma, indeks, 'A', 'A', 1)
-        return [tasma, indeks]
-    def q1(self, tasma, indeks):
-        indeks = self.doznaku(tasma, indeks, ['X','A'], 1)
-        indeks -= 1 
-        return indeks
-    def q2(self, tasma, indeks):
-        koniec = 0
-        zmienna = tasma[indeks]
-        if zmienna == '-':
-            koniec = 1 
-            return [tasma, indeks, zmienna, koniec]
-        else:
-            tasma[indeks] = 'X'
-            return [tasma, indeks, zmienna, koniec]
-    def q_n(self, tasma, indeks, zmiennaprawa):
-        indeks = self.petlaZamian(indeks, self.ilecyfr - 1, -1)
-        zmiennalewa = tasma[indeks]
-        print(zmiennalewa)
-        if zmiennalewa >= zmiennaprawa:
-            tasma[indeks] = zmiennalewa - zmiennaprawa
-            indeks +- 1 
-        else:
-            tasma[indeks] = 10 + zmiennalewa - zmiennaprawa
-            indeks -= 1
-            while(True):
-                if tasma[indeks] == 0:
-                    tasma[indeks] = 9
-                    indeks -= 1 
-                else:
-                    tasma[indeks] -= 1 
-                    indeks -= 1 
-                    break
-        return[tasma, indeks]
-    def Q1(self, tasma, indeks):
-        indeks = self.doznaku(tasma,indeks, 'A', -1)
-        indeks += 1
+        #zamienia znak na tasmie i zmienia head, czyli położenie głowicy
+        self.tasma[self.head] = self.stany[stan_obecny][a][1]
+        self.head += self.stany[stan_obecny][a][2]
+        #podmienia stan
+        self.stan_teraz = nastepny_stan
 
+    def Uruchom(self):
+        while 1: 
+            if(self.CzyStanKoncowy(self.stan_teraz)):
+                print(self.tasma)
+                break
+            self.WykonajKrok()
+            
+           
+        
+    
+    
+  
 if __name__ == "__main__":
-    alfabet = [0,1,2,3,4,5,6,7,8,9, ',','-', 'X']
+    alfabet = [0,1,2,3,4, ',', '-', 'X', 'Y']
     symbol_pusty = 'A'
-    tasma = ['A',1,0,'-',0,5,'A']
-    stan_poczatkowy = 0 
-    Masz = MaszynaTuringa(tasma, alfabet,symbol_pusty,123, stan_poczatkowy, 123, len(tasma) - 1)
-    Masz.RozpocznijDzialanieTasmy(tasma)
+    tasma = ['A',1,0,'-','0','4','A']
+    stan_poczatkowy = 'q0'
+    przejscia = [
+        ['q0', 'q1']
+    ]
+    stany = {'q0':[['A','A',1, 'q1']],
+
+
+            'q1':[
+                ['X','X',-1,'q2'], 
+                ['A','A',-1,'q2'], 
+                [0,0,1,'q1'],
+                [1,1,1,'q1'],
+                [2,2,1,'q1'],
+                [3,3,1,'q1'],
+                [4,4,1,'q1'],
+                [',',',',1,'q1'],
+                ['-','-',1,'q1'],
+                ['Y','Y', 1,'q1'],
+            ],
+                
+            'q2':[
+                ['-','-', 0, 'end'],
+                [0,'X',-1, 'q_0'], #jaki stan
+                [1,'X',-1,'q_1'],
+                [2,'X',-1,'q_2'],
+                [3,'X',-1,'q_3'],
+                [4,'X',-1,'q_4'],
+            ],
+            'end':'end',
+            
+                }
+                
+    
+    Masz = MaszynaTuringa(tasma, alfabet, symbol_pusty, stany, stan_poczatkowy,przejscia)
+    Masz.Uruchom()
