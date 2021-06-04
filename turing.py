@@ -80,7 +80,7 @@ class MaszynaTuringa(AbstrackMaszynaTuringa):
 if __name__ == "__main__":
     alfabet = [0,1,2,3,4, ',', '-', 'X', 'Y']
     symbol_pusty = 'A'
-    tasma = ['A',1,0,'-', 0, 4,'A']
+    tasma = ['A',1,0,'Y','-', 0, 4,'A']
     stan_poczatkowy = 'q0'
     przejscia = [
         ['q0', 'q1']
