@@ -23,13 +23,12 @@ class AbstrackMaszynaTuringa(ABC):
         pass
     
 class MaszynaTuringa(AbstrackMaszynaTuringa):
-    def __init__(self, tasma, alfabet, symbol_pusty, stany, stan_poczatkowy, przejscia):
+    def __init__(self, tasma, alfabet, symbol_pusty, stany, stan_poczatkowy):
         self.tasma = tasma
         self.alfabet = alfabet 
         self.symbol_pusty = symbol_pusty
         self.stany = stany
         self.stan_poczatkowy = stan_poczatkowy
-        self.przejscia = przejscia
         self.head = 0
         self.stan_teraz = self.stan_poczatkowy
      
@@ -85,9 +84,6 @@ if __name__ == "__main__":
     symbol_pusty = 'A'
     tasma = ['A',1,1,'Y','-', 0,4,'A']
     stan_poczatkowy = 'q0'
-    przejscia = [
-        ['q0', 'q1']
-    ]
     stany = {'q0':[['A','A',1, 'q1']],
 
 
