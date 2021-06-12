@@ -35,9 +35,9 @@ class MaszynaTuringa(AbstrackMaszynaTuringa):
         self.head = 0
         self.stan_teraz = self.stan_poczatkowy
     def ListaStanow(self):
-        pass 
+        return self.stany.keys() 
     def Przejscia(self):
-        pass
+        return self.stany
     def CzyStanPoczątkowy(self, stan):
         return stan == self.stan_poczatkowy
     def CzyStanKoncowy(self, stan):
@@ -329,3 +329,4 @@ if __name__ == "__main__":
     
     Masz = MaszynaTuringa(alfabet, stany, stan_poczatkowy)
     Masz.Uruchom(tasma)
+    
